@@ -1,5 +1,5 @@
 require 'json'
-require 'luhn'
+require './lib/backer'
 
 class Project
   attr_reader :name, :goal, :backers
@@ -7,25 +7,21 @@ class Project
   def initialize(name="New_Project", goal=1, backers=[])
     validate_name(name)
     validate_money(goal)
-    @name = name
-    @goal = goal
-    @backers = backers
+    @name, @goal, @backers = name, goal, []
+    backers.each{ |backer| self.add_backer(*backer) }
   end
 
   def add_backer(name, card, pledge)
-    validate_card(card, name)
-    validate_money(pledge)
-    validate_name(name)
-    @backers << [name, card, pledge]
+    @backers << Backer.new(name, card, pledge)
   end
 
   def pledge_total
-    @backers.reduce(0){ |memo, backer| memo + backer[2] }
+    @backers.reduce(0){ |memo, backer| memo + backer.pledge }
   end
 
   def to_s
-    @backers.each do |backer, card, pledge|
-      puts "-- #{backer} backed for $#{pledge}"
+    @backers.each do |backer|
+      puts "-- #{backer.name} backed for $#{backer.pledge}"
     end
     if self.pledge_total < @goal
       puts "#{name} needs $#{@goal-pledge_total} more dollars to be successful"
@@ -34,7 +30,7 @@ class Project
     end
   end
 
-  def to_json
+  def to_json(options = {})
     [name, goal, backers].to_json
   end
 
@@ -64,23 +60,6 @@ class Project
   def validate_money(goal)
     if !goal.is_a? Numeric
       raise "Goal error: amount provided is not a number"
-    end
-  end
-
-  def validate_card(card_number, backer_name)
-    if !Luhn.valid? card_number
-      raise "Card Validation Error: card provided does not pass Luhn-10 check"
-    end
-    if card_number.to_s.length > 19 
-      raise "Card Validation Error: card number too long"
-    end
-    Project.list_projects.each do |name|
-      proj = Project.load(name)
-      proj.backers.each do |backer, card, pledge|
-        if card_number == card && backer != backer_name
-          raise "Card already in use by another backer"
-        end
-      end
     end
   end
 

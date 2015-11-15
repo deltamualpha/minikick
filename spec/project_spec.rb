@@ -22,7 +22,10 @@ RSpec.describe Project do
     it "adds a backer" do
       project = Project.new 'foobar', 1
       project.add_backer 'John', 4111111111111111, 50
-      expect(project.backers[0]).to eq(["John", 4111111111111111, 50])
+      backer = project.backers[0]
+      expect(backer.name).to eq("John")
+      expect(backer.card).to eq(4111111111111111)
+      expect(backer.pledge).to eq(50)
     end
 
     it "validates backer credit card numbers" do
