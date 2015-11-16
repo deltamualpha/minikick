@@ -47,7 +47,7 @@ class Interface
     end
   end
 
-  def backer(db, args)
+  def backer(_, args)
     arg_check(args, 1)
     backer_name = args[0]
     projects = Backer.find_backer_projects(backer_name)

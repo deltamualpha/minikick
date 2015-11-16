@@ -7,6 +7,7 @@ class Backer
   attr_reader :name, :card, :pledge
 
   def initialize(name, card, pledge)
+    # boy, this looks like an anti-pattern
     Utilities.validate_card(card)
     Utilities.validate_money(pledge)
     Utilities.validate_name(name)
@@ -14,7 +15,7 @@ class Backer
     @name, @card, @pledge = name, card, pledge
   end
 
-  def to_json(options = {})
+  def to_json(*)
     [name, card, pledge].to_json
   end
 
@@ -22,7 +23,7 @@ class Backer
     # this is sort of clever: reduce over the list of backers,
     # flipping the t/f switch if a match is found.
     # the boolean then feeds the outer #select.
-    Database.instance.projects.select do |name, project|
+    Database.instance.projects.select do |_, project|
       project.backers.reduce(false) do |memo, backer| 
         memo || backer.name == backer_name
       end

@@ -20,7 +20,7 @@ class Project
     @backers.reduce(0){ |memo, backer| memo + backer.pledge }
   end
 
-  def to_json(options = {})
+  def to_json(*)
     [name, goal, backers].to_json
   end
 

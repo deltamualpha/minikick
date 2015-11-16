@@ -14,7 +14,7 @@ class Database
     if !File.exist?('data/database.json')
       file_save("data/database.json", '{}')
     end
-    @projects = {}
+    @projects = projects
   end
 
   def project(name='New_Project', goal=1, backers=[])
@@ -30,12 +30,12 @@ class Database
   end
 
   def load
-    JSON.parse(File.read("data/database.json")).each do |name, project|
+    JSON.parse(File.read("data/database.json")).each do |_, project|
       self.project(*project)
     end
   end
 
-  def to_json(options={})
+  def to_json(*)
     @projects.to_json
   end
 
