@@ -46,16 +46,13 @@ class Backer
   end
 
   def validate_card(card_number, backer_name)
-    if !Luhn.valid? card_number
-      raise "Card Validation Error: card provided does not pass Luhn-10 check"
-    end
-    if card_number.to_s.length > 19 
-      raise "Card Validation Error: card number too long"
+    if !Luhn.valid? card_number || card_number.to_s.length > 19
+      raise "This card is invalid"
     end
     Database.instance.projects.each do |name, project|
       project.backers.each do |backer|
         if card_number == backer.card && backer.name != backer_name
-          raise "Card already in use by another backer"
+          raise "That card has already been added by another user!"
         end
       end
     end
