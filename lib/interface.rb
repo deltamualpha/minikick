@@ -52,8 +52,9 @@ class Interface
     backer_name = args[0]
     projects = Backer.find_backer_projects(backer_name)
     if projects
+      # I don't like these nested eaches. Is there a better way?
       projects.each do |name, project|
-        project.backers.find do |backer| 
+        project.backers.each do |backer| 
           if backer.name == backer_name
             printf "-- Backed %s for $%.2f\n", name, backer.pledge
           end
