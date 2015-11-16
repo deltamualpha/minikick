@@ -6,12 +6,16 @@ require './lib/utilities'
 class Backer
   attr_reader :name, :card, :pledge
 
+  @@all_backers = []
+
   def initialize(name, card, pledge)
     # boy, this looks like an anti-pattern
     Utilities.validate_card(card)
     Utilities.validate_money(pledge)
     Utilities.validate_name(name)
-    Utilities.validate_pledge(card, pledge)
+    Utilities.validate_pledge(card, name)
+
+    @@all_backers << {"name" => name, "card" => card, "pledge" => pledge}
     @name, @card, @pledge = name, card, pledge
   end
 
@@ -19,15 +23,8 @@ class Backer
     [name, card, pledge].to_json
   end
 
-  def self.find_backer_projects(backer_name)
-    # this is sort of clever: reduce over the list of backers,
-    # flipping the t/f switch if a match is found.
-    # the boolean then feeds the outer #select.
-    Database.instance.projects.select do |_, project|
-      project.backers.reduce(false) do |memo, backer| 
-        memo || backer.name == backer_name
-      end
-    end
+  def self.all_backers
+    @@all_backers
   end
 
 end

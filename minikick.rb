@@ -28,6 +28,6 @@ begin
     puts "  backer <given name>"
     puts "    list all projects a backer has pledged toward"
   end
-rescue Exception => e
+rescue StandardError => e
   printf "ERROR: %s\n", e
 end

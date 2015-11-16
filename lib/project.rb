@@ -5,11 +5,15 @@ require './lib/utilities'
 class Project
   attr_reader :name, :goal, :backers
 
+  @@all_projects = []
+
   def initialize(name="New_Project", goal=1, backers=[])
     Utilities.validate_name(name)
     Utilities.validate_money(goal)
+    
     @name, @goal, @backers = name, goal, []
     backers.each{ |backer| self.add_backer(*backer) }
+    @@all_projects << { "name" => @name, "goal" => @goal, "backers" => @backers }
   end
 
   def add_backer(name, card, pledge)
@@ -23,5 +27,21 @@ class Project
   def to_json(*)
     [name, goal, backers].to_json
   end
+
+  def self.all_projects
+    @@all_projects
+  end
+
+  def self.find_backer_projects(backer_name)
+    # this is sort of clever: reduce over the list of backers,
+    # flipping the t/f switch if a match is found.
+    # the boolean then feeds the outer #select.
+    Project.all_projects.select do |project|
+      project["backers"].reduce(false) do |memo, backer| 
+        memo || backer.name == backer_name
+      end
+    end
+  end
+
 
 end

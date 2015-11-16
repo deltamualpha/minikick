@@ -26,14 +26,10 @@ class Utilities
     end
   end
 
-  # Annyoingly, this works but isn't easily testable
-  # because of how the singleton works.
   def self.validate_pledge(card_number, backer_name)
-    Database.instance.projects.each do |_, project|
-      project.backers.each do |backer|
-        if card_number == backer.card && backer_name != backer.name
-          raise "That card has already been added by another user!"
-        end
+    Backer.all_backers.each do |backer|
+      if card_number == backer["card"] && backer_name != backer["name"]
+        raise "That card has already been added by another user!"
       end
     end
   end
