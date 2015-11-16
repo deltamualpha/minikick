@@ -9,4 +9,4 @@
 ./minikick.rb back Mary Awesome_Sauce 5474942730093167 400
 ./minikick.rb list Awesome_Sauce
 ./minikick.rb backer John
-rm data/Awesome_Sauce.json
+# rm data/Awesome_Sauce.json

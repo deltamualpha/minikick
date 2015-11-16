@@ -19,31 +19,8 @@ class Project
     @backers.reduce(0){ |memo, backer| memo + backer.pledge }
   end
 
-  def to_s
-    @backers.each do |backer|
-      puts "-- #{backer.name} backed for $#{backer.pledge}"
-    end
-    if self.pledge_total < @goal
-      puts "#{name} needs $#{@goal-pledge_total} more dollars to be successful"
-    else
-      puts "#{name} is successful!"
-    end
-  end
-
   def to_json(options = {})
     [name, goal, backers].to_json
-  end
-
-  def save
-    File.open("data/#{name}.json", 'w') { |file| file.write(self.to_json) }
-  end
-
-  def self.load(project_name)
-    return self.new(*JSON.parse(File.read("data/#{project_name}.json")))
-  end
-
-  def self.list_projects
-    Dir.glob('data/*.json').collect{ |f| f.split('/')[1].split('.')[0] }
   end
 
   private

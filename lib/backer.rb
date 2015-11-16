@@ -1,6 +1,7 @@
 require 'luhn'
 require 'json'
 require './lib/project'
+require './lib/database'
 
 class Backer
   attr_reader :name, :card, :pledge
@@ -16,9 +17,14 @@ class Backer
     [name, card, pledge].to_json
   end
 
-  def self.list_backers
-    Project.list_projects.reduce([]) do |memo, name|
-      memo + JSON.parse(File.read("data/#{name}.json"))[2]
+  def self.find_backer_projects(backer_name)
+    # this is sort of clever: reduce over the list of backers,
+    # flipping the t/f switch if a match is found.
+    # the boolean then feeds the outer #select.
+    Database.instance.projects.select do |name, project|
+      project.backers.reduce(false) do |memo, backer| 
+        memo || backer.name == backer_name
+      end
     end
   end
 
@@ -46,9 +52,11 @@ class Backer
     if card_number.to_s.length > 19 
       raise "Card Validation Error: card number too long"
     end
-    Backer.list_backers.each do |backer, card, pledge|
-      if card_number == card && backer != backer_name
-        raise "Card already in use by another backer"
+    Database.instance.projects.each do |name, project|
+      project.backers.each do |backer|
+        if card_number == backer.card && backer.name != backer_name
+          raise "Card already in use by another backer"
+        end
       end
     end
   end

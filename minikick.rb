@@ -1,53 +1,62 @@
 #!/usr/bin/ruby
 
-require './lib/project'
+require './lib/database'
 
-case ARGV.shift
-when "project"
-  if ARGV.length != 2
+db = Database.instance
+db.load
+
+def arg_check(args, count)
+  if args.length != count
     puts "Invalid argument list"
     exit
   end
+end
+
+case ARGV.shift
+when "project"
+  arg_check(ARGV, 2)
   project_name, goal = ARGV
-  if Project.list_projects.include?(project_name)
-    puts "A project already exists with that name."
-  elsif goal == '' || goal.nil?
-    puts "No goal provided."
-  else
-    if Project.new(project_name, goal.to_f).save
-      puts "Added #{project_name} project with target of $#{goal}"
-    else
-      puts "Unknown failure saving project."
-    end
+  db.project(project_name, goal.to_f)
+  if db.save
+    puts "Added #{project_name} project with target of $#{goal}"
   end
 when "back"
+  arg_check(ARGV, 4)
   backer, project_name, credit_card_number, amount = ARGV
-  if Project.list_projects.include?(project_name)
-    proj = Project.load(project_name)
-    proj.add_backer backer, credit_card_number, amount.to_f
-    if proj.save
+  if db.projects[project_name]
+    db.projects[project_name].add_backer backer, credit_card_number, amount.to_f
+    if db.save
       puts "#{backer} backed project #{project_name} for $#{amount}"
     else
-      puts "Unknown failure saving pledge."
+      puts "Failure saving pledge."
     end
   else
     puts "Unknown project."
   end
 when "list"
+  arg_check(ARGV, 1)
   project_name = ARGV[0]
-  if Project.list_projects.include?(project_name)
-    Project.load(project_name).to_s
+  if db.projects[project_name]
+    proj = db.projects[project_name]
+    proj.backers.each do |backer|
+      puts "-- #{backer.name} backed for $#{backer.pledge}"
+    end
+    if proj.pledge_total < proj.goal
+      puts "#{project_name} needs $#{proj.goal-proj.pledge_total} more dollars to be successful"
+    else
+      puts "#{project_name} is successful!"
+    end
   else
     puts "Unknown Project."
   end
 when "backer"
+  arg_check(ARGV, 1)
   backer_name = ARGV[0]
   if backer_name
-    Project.list_projects.each do |name|
-      proj = Project.load(name)
-      proj.backers.each do |backer, card, pledge|
-        if backer_name == backer
-          puts "-- backed #{name} for #{pledge}"
+    Backer.find_backer_projects(backer_name).each do |name, project|
+      project.backers.each do |backer| 
+        if backer.name == backer_name
+          puts "-- Backed #{name} for $#{backer.pledge}"
         end
       end
     end

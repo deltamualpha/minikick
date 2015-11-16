@@ -18,13 +18,5 @@ RSpec.describe Backer do
       expect{ Backer.new 'John', 1234567890123456, 50 }.to raise_error
     end
 
-    xit "prevents credit card reuse" do
-      # tk
-    end
-
-    xit "lists all backers" do
-      # tk
-    end
-
   end
 end
