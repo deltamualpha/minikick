@@ -9,16 +9,6 @@ RSpec.describe Project do
       expect(project.goal).to eq(1)
     end
 
-    it "validates project name length" do
-      expect{ Project.new 'foo', 1 }.to raise_error
-      expect{ Project.new 'foooooooooooooooooooo', 1 }.to raise_error
-    end
-
-    it "rejects invalid project names" do
-      expect{ Project.new 'foo bar', 1 }.to raise_error
-      expect{ Project.new '💩', 1 }.to raise_error
-    end
-
     it "adds a backer" do
       project = Project.new 'foobar', 1
       project.add_backer 'John', 4111111111111111, 50
@@ -28,9 +18,10 @@ RSpec.describe Project do
       expect(backer.pledge).to eq(50)
     end
 
-    it "validates backer credit card numbers" do
+    xit "rejects duplicate backer credit card numbers" do
       project = Project.new('foobar', 1)
-      expect{ project.add_backer 'John', 1234567890123456, 50 }.to raise_error
+      project.add_backer 'Mike', 4111111111111111, 50
+      expect{ project.add_backer 'John', 4111111111111111, 50 }.to raise_error
     end
 
     it "serializes to JSON" do
