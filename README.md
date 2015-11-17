@@ -7,6 +7,8 @@ to use `bin/rspec` as a test shortcut.
 `./minikick.rb` accepts *project*, *back*, *list*, and *backer* commands. Run
 without input to see each one's options.
 
+Written with Ruby 2.0.0; your mileage may vary with other versions.
+
 ### Other Thoughts ###
 
 An interesting project. I wanted to approach it with as little use of frameworks
