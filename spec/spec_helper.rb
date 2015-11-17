@@ -40,6 +40,12 @@ RSpec.configure do |config|
     mocks.verify_partial_doubles = true
   end
 
+  # unset all class variables between runs
+  config.before(:each) do
+    Backer.class_variable_set :@@all_backers, []
+    Project.class_variable_set :@@all_projects, []
+  end
+
 # The settings below are suggested to provide a good initial experience
 # with RSpec, but feel free to customize to your heart's content.
 =begin
