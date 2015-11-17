@@ -17,6 +17,11 @@ about how to structure things myself. Also, no dependencies outside of the
 Luhn-10 library, and that would be pretty easy to actually rewrite -- that 
 checksum is pretty straight-forward.
 
+This also meant that I didn't use a 'proper' persistence backend, but instead
+just write out the state of projects/backers/pledges to a json file. Is this a
+particularly scalable solution? **Of course not!** But it was interesting to
+think about how to structure that and how to load and save to it.
+
 I started off with one mega-class as I explored the problem: everything was 
 included in the `Project` class. [It was a bit of a mess](https://github.com/deltamualpha/minikick/commit/42e0c0b13b125a19791b377cef04e8d54cb3c759) 
 -- way too all-over-the-place, far too much unrelated behavior... but it
