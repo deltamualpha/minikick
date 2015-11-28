@@ -13,7 +13,7 @@ class Project
     
     @name, @goal, @backers = name, goal, []
     backers.each{ |backer| self.add_backer(*backer) }
-    @@all_projects << { "name" => @name, "goal" => @goal, "backers" => @backers }
+    @@all_projects << self
   end
 
   def add_backer(name, card, pledge)
@@ -33,12 +33,9 @@ class Project
   end
 
   def self.find_backer_projects(backer_name)
-    # this is sort of clever: reduce over the list of backers,
-    # flipping the t/f switch if a match is found.
-    # the boolean then feeds the outer #select.
     Project.all_projects.select do |project|
-      project["backers"].reduce(false) do |memo, backer| 
-        memo || backer.name == backer_name
+      project.backers.any? do |backer| 
+        backer.name == backer_name
       end
     end
   end

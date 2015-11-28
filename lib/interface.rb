@@ -68,9 +68,9 @@ class Interface
     if projects
       # I don't like these nested eaches. Is there a better way?
       projects.each do |project|
-        project['backers'].each do |backer|
+        project.backers.each do |backer|
           if backer.name == backer_name
-            printf "-- Backed %s for $%.2f\n", project['name'], backer.pledge
+            printf "-- Backed %s for $%.2f\n", project.name, backer.pledge
           end
         end
       end

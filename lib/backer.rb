@@ -15,7 +15,7 @@ class Backer
     Utilities.validate_name(name)
     Utilities.validate_pledge(card, name)
 
-    @@all_backers << {"name" => name, "card" => card, "pledge" => pledge}
+    @@all_backers << self
     @name, @card, @pledge = name, card, pledge
   end
 
