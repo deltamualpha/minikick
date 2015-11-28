@@ -9,10 +9,7 @@ class Database
   attr_reader :projects
 
   def initialize(projects={})
-    FileUtils.mkdir_p('data') unless File.directory?('data')
-    if !File.exist?('data/database.json')
-      file_save("data/database.json", '{}')
-    end
+    FileUtils.mkdir_p('data')
     @projects = projects
   end
 
@@ -29,7 +26,12 @@ class Database
   end
 
   def load
-    JSON.parse(File.read("data/database.json")).each do |_, project|
+    begin
+      db = File.read("data/database.json")
+    rescue
+      db = "{}"
+    end
+    JSON.parse(db).each do |_, project|
       self.project(*project)
     end
   end
