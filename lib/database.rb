@@ -22,7 +22,7 @@ class Database
   end
 
   def save
-    file_save("data/database.json", self.to_json)
+    File.open("data/database.json", 'w') { |f| f.write(self.to_json) }
   end
 
   def load
@@ -38,12 +38,6 @@ class Database
 
   def to_json(*)
     @projects.to_json
-  end
-
-  private
-
-  def file_save(file, content)
-    File.open(file, 'w') { |f| f.write(content) }
   end
 
 end
