@@ -1,6 +1,6 @@
 require 'json'
 require 'singleton'
-require 'FileUtils'
+require 'fileutils'
 require './lib/project'
 
 class Database
